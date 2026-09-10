@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>West Point Honor Process — Interactive Study Guide</title>
+<style>
+:root{
+  --bg:#fff9fc; --card:#ffffff; --ink:#302938; --muted:#756d7c;
+  --pink:#e99ab8; --pink2:#f8d9e5; --purple:#9b8acb; --lav:#eee9fa;
+  --green:#9ac7b0; --green2:#e2f2e9; --gold:#e7bd75; --gold2:#fff1d2;
+  --blue:#8eb8d9; --blue2:#e3f1fb; --border:#eadfe7;
+  --shadow:0 10px 30px rgba(70,45,70,.09);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(180deg,#fff9fc 0%,#f8f6ff 100%);color:var(--ink);line-height:1.55}
+header{padding:55px 20px 42px;text-align:center;background:linear-gradient(135deg,#fce6ef,#eee9fa);border-bottom:1px solid var(--border)}
+.badge{display:inline-block;padding:7px 13px;border-radius:999px;background:#fff;color:#8b6d7e;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+h1{font-size:clamp(2.1rem,6vw,4.2rem);line-height:1.05;margin:18px auto 12px;max-width:950px}
+.subtitle{max-width:760px;margin:auto;color:var(--muted);font-size:1.05rem}
+.container{max-width:1100px;margin:auto;padding:25px 18px 70px}
+.nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;gap:8px;overflow:auto}
+.nav button{white-space:nowrap;border:0;background:#f4eff7;color:#5e5364;padding:9px 13px;border-radius:999px;cursor:pointer;font-weight:700}
+.nav button:hover,.nav button.active{background:var(--pink2);color:#7f4660}
+.progress{margin:18px 0;background:#eee8ee;border-radius:99px;height:9px;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--purple));transition:.35s}
+.section{display:none}.section.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:22px;margin:18px 0;box-shadow:var(--shadow)}
+.card h2,.card h3{margin-top:0}
+.kicker{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:#a16b84;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
+.mini{padding:17px;border-radius:17px;border:1px solid var(--border);background:#fff}
+.mini strong{display:block;font-size:1.05rem;margin-bottom:5px}
+.callout{border-left:5px solid var(--pink);background:#fff4f8;padding:15px 17px;border-radius:12px;margin:15px 0}
+.green{border-left-color:var(--green);background:var(--green2)}
+.blue{border-left-color:var(--blue);background:var(--blue2)}
+.gold{border-left-color:var(--gold);background:var(--gold2)}
+.lav{border-left-color:var(--purple);background:var(--lav)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.step{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 14px;min-width:145px;text-align:center;font-weight:800}
+.arrow{font-size:1.3rem;color:#aa8da0}
+details{border:1px solid var(--border);border-radius:15px;margin:10px 0;background:#fff;overflow:hidden}
+summary{cursor:pointer;padding:15px 17px;font-weight:800;background:#fffafd}
+details>div{padding:0 17px 16px;color:#544c59}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{padding:11px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{background:#faf5f9}
+.checklist label{display:block;padding:9px 0;cursor:pointer}
+.checklist input{accent-color:#c77e9b;margin-right:9px}
+button.action{border:0;border-radius:13px;padding:11px 15px;background:var(--pink);color:white;font-weight:800;cursor:pointer}
+.quizq{padding:17px;border:1px solid var(--border);border-radius:16px;margin:12px 0}
+.quizq button{display:block;width:100%;text-align:left;margin:7px 0;border:1px solid var(--border);background:#fff;padding:10px;border-radius:11px;cursor:pointer}
+.quizq button.correct{background:#e2f2e9;border-color:#9ac7b0}
+.quizq button.wrong{background:#fde4e8;border-color:#e0a0ae}
+.score{font-weight:900;font-size:1.15rem;margin-top:15px}
+.small{font-size:.9rem;color:var(--muted)}
+.backtop{text-align:center;margin-top:25px}
+.backtop button{border:0;background:var(--lav);padding:10px 15px;border-radius:999px;font-weight:800;cursor:pointer}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 15px}
+@media(max-width:650px){.flow{display:block}.step{margin:7px 0}.arrow{display:block;text-align:center}.card{padding:17px}}
+
+.acronym-search-wrap{margin:18px 0 22px}
+.acronym-search{width:100%;padding:14px 17px;border:2px solid var(--pink);border-radius:16px;font-size:16px;background:#fff;outline:none}
+.acronym-search:focus{box-shadow:0 0 0 4px rgba(233,154,184,.18)}
+.acronym-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:14px}
+.acronym-card{display:flex;gap:13px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.acronym-card h3{margin:0 0 5px;font-size:1rem}
+.acronym-card p{margin:0;color:var(--muted);font-size:.88rem;line-height:1.45}
+.acronym{flex:0 0 auto;min-width:62px;text-align:center;padding:8px 7px;border-radius:12px;background:#fff0f6;color:#8b4965;font-weight:900;border:1px solid #f2c9dc}
+.tip-card{margin-top:18px;padding:17px;border-radius:18px;background:#fff7fb;border:1px solid #f1d3e2}
+.tip-card span{display:inline-block;margin:7px 14px 0 0}
+
+</style>
+</head>
+<body>
+<header id="top">
+  <span class="badge">Study Guide • USCC PAM 15-1</span>
+  <h1>🌸 The West Point Honor Process</h1>
+  <p class="subtitle">An interactive, step-by-step guide from the first accusation all the way through final Superintendent adjudication, separation, retention, and SLDP-H.</p>
+</header>
+
+<nav class="nav" id="nav">
+  <button class="active" data-target="overview">Overview</button>
+  <button data-target="accusation">1–2 Accusation</button>
+  <button data-target="investigation">3–7 Investigation</button>
+  <button data-target="hearing">8–16 Hearing</button>
+  <button data-target="post">17–25 Post-Hearing</button>
+  <button data-target="outcomes">26–31 Outcomes</button>
+  <button data-target="special">⭐ Special Situations</button>
+  <button data-target="acronyms">🔤 Acronyms</button>
+  <button data-target="memorize">Cheat Sheet</button>
+  <button data-target="quiz">Quiz 🧠</button>
+</nav>
+
+<main class="container">
+<div class="progress"><span id="bar"></span></div>
+
+<section class="section active" id="overview">
+  <div class="card">
+    <div class="kicker">The whole process</div>
+    <h2>Start here 👀</h2>
+    <p>The Honor process is easiest to understand as five big phases: <b>approach/notification → investigation → hearing preparation → hearing → post-hearing/final adjudication.</b></p>
+    <div class="flow">
+      <div class="step">Potential violation</div><div class="arrow">→</div>
+      <div class="step">Approach / notification</div><div class="arrow">→</div>
+      <div class="step">Investigation</div><div class="arrow">→</div>
+      <div class="step">Commandant referral</div><div class="arrow">→</div>
+      <div class="step">Preliminary hearing</div><div class="arrow">→</div>
+      <div class="step">HIH or CAB</div><div class="arrow">→</div>
+      <div class="step">FOUND / NOT FOUND</div><div class="arrow">→</div>
+      <div class="step">Superintendent</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="mini"><strong>🔎 IT</strong>Investigates the case.</div>
+    <div class="mini"><strong>📋 RHR</strong>Reviews the investigation.</div>
+    <div class="mini"><strong>⚖️ HIO</strong>Reviews and decides whether to forward, drop, or return.</div>
+    <div class="mini"><strong>🧑‍⚖️ SAH</strong>Reviews/oversees the case.</div>
+    <div class="mini"><strong>⚖️ BJA</strong>Conducts legal sufficiency review.</div>
+    <div class="mini"><strong>🎖️ Commandant</strong>Only authority who refers a case to an Honor hearing.</div>
+    <div class="mini"><strong>🗳️ HIH/CAB</strong>Handles the hearing/finding or admitted case.</div>
+    <div class="mini"><strong>⭐ Superintendent</strong>Makes final adjudication.</div>
+  </div>
+
+  <div class="callout gold"><b>⭐ The distinction to memorize:</b> <b>Finding</b> asks “Did the Cadet violate the Honor Code?” <b>Disposition</b> asks “What happens because of the violation?” A FOUND result does <u>not</u> automatically mean separation.</div>
+</section>
+
+<section class="section" id="accusation">
+  <div class="card">
+    <div class="kicker">Phase 1</div><h2>1. A potential violation occurs</h2>
+    <p>Someone becomes aware of conduct that may violate the Cadet Honor Code: <b>“A Cadet will not lie, cheat, steal, or tolerate those who do.”</b></p>
+    <p>Potential violations can be reported by Cadets, Staff, Faculty, and certain personnel outside West Point who are involved with Cadets.</p>
+  </div>
+
+  <div class="card">
+    <div class="kicker">Phase 1 continued</div><h2>2. Approach for clarification / notification</h2>
+    <p>The purpose is initially to figure out what happened—not to automatically accuse the Cadet.</p>
+    <details><summary>What if the situation is explained?</summary><div>If the explanation resolves the concern, there is no Honor case.</div></details>
+    <details><summary>What if suspicion remains?</summary><div>Once the person believes an Honor violation may have occurred, questioning must stop and the Cadet must be advised of Article 31 rights before further questioning.</div></details>
+    <details><summary>What are the Cadet's choices?</summary><div>The Cadet can remain silent or seek legal assistance. If the Cadet waives the applicable rights and continues talking, questioning can continue under the required procedures.</div></details>
+    <div class="callout">💡 <b>Memory trick:</b> Clarify first. Once it becomes an actual suspected violation, <b>rights kick in.</b></div>
+  </div>
+</section>
+
+<section class="section" id="investigation">
+  <div class="card"><div class="kicker">Phase 2</div><h2>3. Case inception</h2>
+    <p>The case enters the Honor System. The RHR officially incepts the case by notifying the Cadet that they are a <b>Cadet Under Investigation (CUI)</b> and assigning an <b>Investigative Team (IT)</b>.</p>
+    <p>The IT comes from the CUI's regiment but not the CUI's company.</p>
+  </div>
+
+  <div class="card"><h2>4. Investigative Team (IT)</h2>
+    <p>The IT investigates the allegation and gathers evidence that supports or does not support the alleged violation.</p>
+    <div class="grid">
+      <div class="mini">📝 Sworn statements</div><div class="mini">👥 Witness testimony</div>
+      <div class="mini">📄 Documents</div><div class="mini">💬 Emails / texts</div>
+      <div class="mini">🎥 Video / audio</div><div class="mini">📚 Academic materials</div>
+    </div>
+    <div class="callout blue">Electronic evidence has special procedures. Before an IT requests inspection of a personal electronic device, the Cadet must be advised of applicable Article 31 rights; consent/search authorization rules then apply.</div>
+    <p>When finished, the IT sends the RHR the investigation, summary memorandum, timeline, evidence summary, pertinent issues, and recommended allegations.</p>
+  </div>
+
+  <div class="card"><h2>5. RHR review</h2>
+    <p>The <b>Regimental Honor Representative</b> reviews the completed investigation.</p>
+    <div class="grid">
+      <div class="mini"><strong>FORWARD</strong>Probable cause exists for each element.</div>
+      <div class="mini"><strong>DROP</strong>An element has no supporting evidence.</div>
+      <div class="mini"><strong>RETURN</strong>The investigation needs more work.</div>
+    </div>
+  </div>
+
+  <div class="card"><h2>6. HIO review</h2>
+    <p>The <b>Honor Investigations Officer</b> independently reviews the evidence and recommendations.</p>
+    <div class="grid">
+      <div class="mini"><strong>FORWARD</strong>Probable cause for each required element.</div>
+      <div class="mini"><strong>DROP</strong>No evidence supports an element.</div>
+      <div class="mini"><strong>RETURN</strong>More investigation is needed.</div>
+    </div>
+    <div class="callout lav"><b>If RHR and HIO disagree:</b> the case can go to the Honor Captain for resolution.</div>
+  </div>
+
+  <div class="card"><h2>7. SAH → BJA → Commandant</h2>
+    <p><b>SAH:</b> checks the thoroughness/procedural sufficiency and sends a forwarded case for legal review.</p>
+    <p><b>BJA:</b> conducts the legal sufficiency review and prepares the pre-referral legal advice.</p>
+    <p><b>Commandant:</b> reviews the complete record and is the only authority authorized to refer a case to an Honor hearing.</p>
+    <div class="callout green"><b>Commandant choices:</b> REFER • RETURN for additional investigation • DROP/DISMISS.</div>
+  </div>
+</section>
+
+<section class="section" id="hearing">
+  <div class="card"><div class="kicker">Phase 3</div><h2>8. The Cadet is served</h2>
+    <p>If referred, the HSEC serves the Respondent with notification of referral, the complete investigation packet, relevant evidence, and notice of rights/responsibilities.</p>
+  </div>
+
+  <div class="card"><h2>9. Respondent rights</h2>
+    <div class="checklist">
+      <label><input type="checkbox"> Right to remain silent</label>
+      <label><input type="checkbox"> Right to legal assistance</label>
+      <label><input type="checkbox"> Right to question witnesses</label>
+      <label><input type="checkbox"> Right to call witnesses</label>
+      <label><input type="checkbox"> Right to present evidence</label>
+      <label><input type="checkbox"> Right to object to evidence</label>
+      <label><input type="checkbox"> Right to personally appear / be present during open sessions</label>
+      <label><input type="checkbox"> Right to challenge voting board members for cause</label>
+      <label><input type="checkbox"> Right to investigative documents and a Cadet Advisor</label>
+      <label><input type="checkbox"> Right to opening statement and closing argument</label>
+    </div>
+  </div>
+
+  <div class="card"><h2>10. Admit or contest?</h2>
+    <div class="grid">
+      <div class="mini"><strong>ADMIT → CAB</strong>A formal admission must cover all elements and be accepted by the Hearing Advisor.</div>
+      <div class="mini"><strong>CONTEST → HIH</strong>Contested allegations go to an Honor Investigative Hearing.</div>
+    </div>
+  </div>
+
+  <div class="card"><h2>11. Preliminary hearing</h2>
+    <p>The preliminary hearing addresses rights, objections, evidence, witnesses, procedural issues, and—if applicable—a formal admission.</p>
+    <p>The Respondent receives time to meet with a Legal Assistance attorney and prepare. For an HIH, a second preliminary hearing normally occurs the morning of the hearing to finalize the board packet, witness list, and evidence.</p>
+  </div>
+
+  <div class="card"><h2>12. Board & hearing roles</h2>
+    <div class="grid">
+      <div class="mini"><strong>Board President</strong>Runs the board and maintains order.</div>
+      <div class="mini"><strong>Hearing Advisor</strong>Provides legal/procedural guidance.</div>
+      <div class="mini"><strong>Respondent</strong>The Cadet whose case is being heard.</div>
+      <div class="mini"><strong>Cadet Advisor</strong>Assists/advises the Respondent.</div>
+      <div class="mini"><strong>IR</strong>Presents the investigation/evidence.</div>
+      <div class="mini"><strong>Legal Technician</strong>Supports recording, evidence, and witness coordination.</div>
+    </div>
+  </div>
+
+  <div class="card"><h2>13. Voir dire</h2>
+    <p>Board members are questioned for impartiality. The Respondent and IR can challenge voting board members for cause.</p>
+  </div>
+
+  <div class="card"><h2>14. HIH evidence & testimony</h2>
+    <p>The board reviews the approved case packet. The IR and Respondent can make opening statements. Witness testimony and evidence are then presented.</p>
+    <p>The Respondent has the opportunity to question witnesses, present witnesses/evidence, and respond to the allegations.</p>
+  </div>
+
+  <div class="card"><h2>15. Closing statements & deliberation</h2>
+    <p>After testimony, the IR and Respondent give closing statements. The board then enters closed deliberations.</p>
+    <div class="callout gold"><b>Important:</b> During deliberations, the board does not receive new evidence or testimony. It decides the allegations from the evidence admitted during the hearing.</div>
+  </div>
+
+  <div class="card"><h2>16. Finding</h2>
+    <p>For an HIH, the standard of proof is <b>preponderance of the evidence</b>—more likely than not, or greater than 50%.</p>
+    <p>The nine voting members vote by secret written ballot on each allegation. <b>6 of 9 votes</b> are required for a FOUND finding.</p>
+    <div class="grid">
+      <div class="mini"><strong>❌ NOT FOUND</strong>The case is closed. The administrative flag is closed.</div>
+      <div class="mini"><strong>✅ FOUND</strong>The case proceeds to post-hearing review and adjudication.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="post">
+  <div class="card"><div class="kicker">Phase 5</div><h2>17. Immediate actions after FOUND</h2>
+    <p>The SAH speaks with the Cadet and, within 48 hours, addresses the FOUND flag, imposed consequences, privacy authorization, and company assignment request.</p>
+  </div>
+
+  <div class="card"><h2>18. The review & recommendation process</h2>
+    <p>The formal review process begins with a FOUND HIH or completion of a CAB and ends with the Superintendent's final adjudication.</p>
+    <div class="flow">
+      <div class="step">Record/transcript</div><div class="arrow">→</div>
+      <div class="step">Honor Captain</div><div class="arrow">→</div>
+      <div class="step">SAH</div><div class="arrow">→</div>
+      <div class="step">Chain of Command</div><div class="arrow">→</div>
+      <div class="step">Commandant</div><div class="arrow">→</div>
+      <div class="step">Cadet rebuttal</div><div class="arrow">→</div>
+      <div class="step">SJA review</div><div class="arrow">→</div>
+      <div class="step">Superintendent</div>
+    </div>
+  </div>
+
+  <div class="card"><h2>19. Record of proceedings</h2>
+    <p>A summarized transcript is produced. The Hearing Advisor—or, when applicable, the legal technician or Board President—authenticates the accuracy and certifies the findings/recommendations.</p>
+  </div>
+
+  <div class="card"><h2>20. Honor Captain recommendation</h2><p>The Honor Captain reviews the completed case file and makes a recommendation for final adjudication.</p></div>
+
+  <div class="card"><h2>21. SAH recommendation</h2><p>The SAH reviews the case and provides a written recommendation, summary of violations, timeline, and summary of board recommendations.</p></div>
+
+  <div class="card"><h2>22. Chain of Command recommendations</h2><p>Company and tactical leadership provide recommendations concerning final disposition to the Commandant.</p></div>
+
+  <div class="card"><h2>23. Commandant's Honor meeting</h2>
+    <p>The Commandant normally meets with the FOUND Cadet. Appropriate leadership and Honor personnel may attend, but someone who reported the Cadet or was directly involved in the alleged violation cannot attend.</p>
+    <p>After the meeting, the Commandant makes a written recommendation to the Superintendent concerning final disposition.</p>
+  </div>
+
+  <div class="card"><h2>24. Cadet rebuttal</h2>
+    <p>The Cadet receives the relevant recommendations and record and can submit a written rebuttal and additional matters to the Superintendent. The Commandant's meeting is treated as Day Zero; the Cadet normally has <b>three duty days</b> for this response unless the time is waived.</p>
+  </div>
+
+  <div class="card"><h2>25. SJA review</h2><p>After the rebuttal, the Staff Judge Advocate reviews legal issues raised by the Cadet or counsel and prepares the record for Superintendent action.</p></div>
+</section>
+
+<section class="section" id="outcomes">
+  <div class="card"><div class="kicker">Final disposition</div><h2>26. Superintendent adjudication ⭐</h2>
+    <p>The Superintendent reviews the record, evidence, findings, recommendations, legal review, and the Cadet's rebuttal/additional matters.</p>
+    <div class="grid">
+      <div class="mini"><strong>HIH NOT FOUND</strong>The Superintendent is bound by the NOT FOUND finding; the case is closed.</div>
+      <div class="mini"><strong>FOUND</strong>The Superintendent evaluates whether the evidence supports the finding and determines final disposition.</div>
+    </div>
+  </div>
+
+  <div class="card"><h2>27. Superintendent sets aside FOUND</h2>
+    <p>If the Superintendent determines the finding is not supported, the finding can be set aside. The Superintendent may close the case, direct SLDP-H, or direct further investigation as authorized.</p>
+  </div>
+
+  <div class="card"><h2>28. Superintendent confirms FOUND</h2>
+    <p>The major paths are:</p>
+    <div class="flow">
+      <div class="step">CONFIRM FOUND</div><div class="arrow">→</div>
+      <div class="step">SEPARATION</div>
+      <div class="arrow">or</div>
+      <div class="step">DISCRETION / RETENTION</div>
+    </div>
+  </div>
+
+  <div class="card"><h2>29. Separation</h2>
+    <p>The Superintendent may direct separation for Third and Fourth Class Cadets. For First and Second Class Cadets, the Superintendent recommends separation to the appropriate Army authority.</p>
+    <div class="callout">Once separated, only the Secretary of the Army or appointed designee may reinstate a Cadet.</div>
+  </div>
+
+  <div class="card"><h2>30. Discretion / retention</h2>
+    <p>The Superintendent can retain the Cadet through discretion and impose developmental alternatives. Examples include turning the Cadet back to the next graduating class or delaying graduation.</p>
+    <p>If retained through discretion, the Cadet is placed in <b>suspended separation</b> and directed to complete <b>SLDP-H</b>.</p>
+  </div>
+
+  <div class="card"><h2>31. SLDP-H & suspended separation</h2>
+    <p><b>SLDP-H = Special Leader Development Program–Honor.</b> A Developmental Coach guides the Cadet through structured reflection and introspection aimed at moral/ethical growth.</p>
+    <div class="callout green"><b>Successful completion:</b> the Cadet reaches the intended developmental end state and the Superintendent approves completion.</div>
+    <div class="callout"><b>Failure to complete SLDP-H:</b> the Superintendent may vacate the separation suspension and separate the Cadet.</div>
+    <p>Suspended separation can also be vacated for certain later events, including a second Honor violation, failure to complete SLDP-H, certain misconduct findings, specified demerit thresholds, or an MD “F” while under suspended separation.</p>
+  </div>
+
+  <div class="card"><h2>Administrative consequences</h2>
+    <p>FOUND Cadets can also face administrative consequences, including restrictions involving athletic/club representation, club trips, Semester Abroad, Academy Exchange, Brigade Open Finals, and public relations activities. Certain consequences can remain in effect until SLDP-H completion or an approved ETP.</p>
+    <div class="callout gold"><b>ETP:</b> Exception to Policy. Requests are made in writing and routed through the appropriate chain; approval authority depends on the consequence.</div>
+  </div></section>
+
+
+<section class="section" id="special">
+  <div class="card"><div class="kicker">⭐ Special situations</div><h2>Situations that work a little differently</h2><p>These are the exceptions or special circumstances worth knowing separately from the normal Honor process.</p></div>
+  <div class="card"><h2>🆕 New Cadets</h2><p>New Cadets are subject to the Honor Code after taking the oath on R-Day, but they do not receive the normal separation/consequence structure used for Fourth Class Cadets.</p>
+    <details><summary>If a New Cadet admits</summary><div>The case goes to a <b>CAB</b>.</div></details>
+    <details><summary>If a New Cadet contests</summary><div>The case goes to a <b>HIH</b> using the standard Fourth Class board.</div></details>
+    <details><summary>If a New Cadet is NOT FOUND</summary><div>The case is closed.</div></details>
+    <details><summary>If a New Cadet is FOUND</summary><div>The New Cadet completes <b>SLDP-H</b> only; standard separation and administrative consequences do not apply while the Cadet is a New Cadet.</div></details>
+    <div class="callout gold"><b>Important:</b> After Acceptance Day, the Cadet becomes a Fourth Class Cadet and the standard Honor consequences apply.</div>
+  </div>
+  <div class="card"><h2>⚖️ Honor vs. disciplinary cases</h2><p>Honor and disciplinary/misconduct cases can run separately or simultaneously. The underlying misconduct can be disciplinary while lying about it can create a separate Honor allegation.</p></div>
+  <div class="card"><h2>🧩 Multiple allegations</h2><p>A case may contain multiple allegations. The Commandant can refer all or only some. If the Respondent admits some but contests others, contested allegations go to <b>HIH</b> and admitted allegations can go to <b>CAB</b>.</p></div>
+  <div class="card"><h2>📚 Academic Honor</h2><p>The Dean has authority for final approval of an <b>F grade</b> resulting from an Honor violation.</p></div>
+  <div class="card"><h2>📱 Electronic evidence</h2><p>Before an IT asks to inspect a Cadet's personal electronic device, applicable <b>Article 31 rights</b> must be addressed. Consent or proper search authorization is then required.</p></div>
+  <div class="card"><h2>🛡️ Article 31 during clarification</h2><p>If an approach for clarification changes into suspicion of a violation, questioning must stop and Article 31 rights must be advised before further questioning.</p></div>
+  <div class="card"><h2>🔄 Further investigation</h2><p>During review, the <b>RHR</b>, <b>HIO</b>, <b>SAH</b>, or <b>Commandant</b> can direct or request additional investigation when the record needs more work.</p></div>
+  <div class="card"><h2>❌ NOT FOUND</h2><p>A NOT FOUND HIH finding closes the Honor case. The administrative flag is closed.</p></div>
+  <div class="card"><h2>✅ FOUND does not automatically mean separation</h2><p>A FOUND case moves into post-hearing review and Superintendent adjudication. The Superintendent can confirm the finding, set it aside, or choose separation or discretion/retention as authorized by the publication.</p></div>
+</section>
+
+
+<section class="section" id="acronyms">
+  <div class="card">
+    <div class="kicker">🔤 Quick reference</div><h2>Honor Process Acronyms</h2>
+    <p>Search by acronym or by its meaning.</p>
+    <div class="acronym-search-wrap"><input id="acronymSearch" class="acronym-search" type="search" placeholder="🔎 Search acronyms or meanings..." oninput="filterAcronyms()"></div>
+    <div id="acronymGrid" class="acronym-grid"><div class="acronym-card"><span class="acronym">AMS</span><div><h3>Army Management System</h3><p>System referenced for administrative flags and related actions.</p></div></div>
+<div class="acronym-card"><span class="acronym">AR</span><div><h3>Army Regulation</h3><p>An Army-level regulation referenced by the Honor process.</p></div></div>
+<div class="acronym-card"><span class="acronym">BJA</span><div><h3>Brigade Judge Advocate</h3><p>Conducts the legal sufficiency review before Commandant referral.</p></div></div>
+<div class="acronym-card"><span class="acronym">BTO</span><div><h3>Brigade Tactical Officer</h3><p>Provides a chain-of-command recommendation during post-hearing review.</p></div></div>
+<div class="acronym-card"><span class="acronym">CAB</span><div><h3>Cadet Accountability Board</h3><p>Board used when the Respondent formally admits the allegation(s).</p></div></div>
+<div class="acronym-card"><span class="acronym">CHR</span><div><h3>Cadet Honor Representative</h3><p>Cadet Honor representative involved in reporting/receiving potential Honor violations as described in the publication.</p></div></div>
+<div class="acronym-card"><span class="acronym">CUI</span><div><h3>Cadet Under Investigation</h3><p>Status of the Cadet after the RHR officially incepts the investigation.</p></div></div>
+<div class="acronym-card"><span class="acronym">CoC</span><div><h3>Chain of Command</h3><p>The command structure that provides recommendations during post-hearing review.</p></div></div>
+<div class="acronym-card"><span class="acronym">ETP</span><div><h3>Exception to Policy</h3><p>An exception to policy referenced in connection with certain administrative consequence/reinstatement decisions.</p></div></div>
+<div class="acronym-card"><span class="acronym">HIH</span><div><h3>Honor Investigative Hearing</h3><p>Hearing used when the Respondent contests the allegation(s).</p></div></div>
+<div class="acronym-card"><span class="acronym">HIO</span><div><h3>Honor Investigating Officer</h3><p>Independently reviews the investigation, evidence, allegations, and recommendations.</p></div></div>
+<div class="acronym-card"><span class="acronym">HSEC</span><div><h3>Honor Support / administrative function</h3><p>Handles service of referred case materials and related hearing support in the publication.</p></div></div>
+<div class="acronym-card"><span class="acronym">IR</span><div><h3>Investigative Representative</h3><p>Presents the investigation and evidence at the Honor hearing.</p></div></div>
+<div class="acronym-card"><span class="acronym">IT</span><div><h3>Investigative Team</h3><p>Investigates the allegation and gathers statements, testimony, documents, and other evidence.</p></div></div>
+<div class="acronym-card"><span class="acronym">RHR</span><div><h3>Regimental Honor Representative</h3><p>Officially incepts the case, notifies the Cadet they are a CUI, and assigns the IT.</p></div></div>
+<div class="acronym-card"><span class="acronym">RTO</span><div><h3>Regimental Tactical Officer</h3><p>Provides a chain-of-command recommendation during post-hearing review.</p></div></div>
+<div class="acronym-card"><span class="acronym">SAH</span><div><h3>Special Assistant to the Commandant for Honor</h3><p>Reviews the investigation and provides a written recommendation during post-hearing review.</p></div></div>
+<div class="acronym-card"><span class="acronym">SJA</span><div><h3>Staff Judge Advocate</h3><p>Reviews legal issues raised in the Cadet's rebuttal and prepares the record for Superintendent action.</p></div></div>
+<div class="acronym-card"><span class="acronym">SLDP-H</span><div><h3>Special Leader Development Program–Honor</h3><p>Developmental program designed to address/correct character deficiencies after an Honor finding when directed.</p></div></div>
+<div class="acronym-card"><span class="acronym">WAP</span><div><h3>Willful Admissions Process</h3><p>The 07 June 2024 publication states that the WAP was removed.</p></div></div></div>
+    <div class="tip-card"><b>🧠 Easiest chain to remember:</b><br>
+      <span><b>IT</b> → investigates</span><span><b>RHR</b> → incepts/reviews</span><span><b>HIO</b> → reviews</span><span><b>SAH</b> → reviews/oversees</span><span><b>BJA</b> → legal review</span><span><b>HIH</b> → contest</span><span><b>CAB</b> → admit</span><span><b>SLDP-H</b> → development</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="memorize">
+  <div class="card">
+    <div class="kicker">Exam mode</div><h2>🧠 The chain to memorize</h2>
+    <div class="flow">
+      <div class="step">IT</div><div class="arrow">→</div><div class="step">RHR</div><div class="arrow">→</div>
+      <div class="step">HIO</div><div class="arrow">→</div><div class="step">SAH</div><div class="arrow">→</div>
+      <div class="step">BJA</div><div class="arrow">→</div><div class="step">Commandant</div><div class="arrow">→</div>
+      <div class="step">Respondent</div><div class="arrow">→</div><div class="step">Preliminary</div><div class="arrow">→</div>
+      <div class="step">HIH/CAB</div><div class="arrow">→</div><div class="step">FOUND/NOT FOUND</div><div class="arrow">→</div>
+      <div class="step">Commandant</div><div class="arrow">→</div><div class="step">Superintendent</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>⭐ Five things most worth memorizing</h2>
+    <ol>
+      <li><b>Commandant = referral authority</b> for an Honor hearing.</li>
+      <li><b>Contest → HIH.</b> Admit → CAB after the formal admission is accepted.</li>
+      <li><b>HIH standard = preponderance of the evidence.</b></li>
+      <li><b>6 of 9 votes = FOUND</b> on an HIH allegation.</li>
+      <li><b>Superintendent = final adjudication.</b> FOUND does not automatically equal separation.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>Quick decision tree</h2>
+    <details><summary>Did the concern get resolved during clarification?</summary><div><b>Yes →</b> no Honor case. <br><b>No →</b> rights/procedures and formal case processing.</div></details>
+    <details><summary>Does the investigation support the allegation?</summary><div><b>No →</b> it can be dropped/returned. <br><b>Yes →</b> continue toward Commandant referral.</div></details>
+    <details><summary>Did the Commandant refer it?</summary><div><b>No →</b> case does not proceed to an Honor hearing. <br><b>Yes →</b> Respondent is served and prepares for preliminary hearing.</div></details>
+    <details><summary>Admit or contest?</summary><div><b>Admit → CAB.</b> <br><b>Contest → HIH.</b></div></details>
+    <details><summary>HIH finding?</summary><div><b>NOT FOUND → closed.</b> <br><b>FOUND → post-hearing review and Superintendent adjudication.</b></div></details>
+  </div>
+</section>
+
+<section class="section" id="quiz">
+  <div class="card"><div class="kicker">Check yourself</div><h2>🧠 Mini Honor Process Quiz</h2><p class="small">Click an answer. Your score updates automatically.</p><div id="quizbox"></div><div class="score" id="score"></div></div>
+</section>
+
+<div class="backtop"><button onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button></div>
+</main>
+
+<footer>Built as a study aid from the USCC PAM 15-1 material used for this guide. Always use the governing/current West Point publication for official decisions.</footer>
+
+<script>
+const buttons=[...document.querySelectorAll('.nav button')];
+const sections=[...document.querySelectorAll('.section')];
+function show(id){
+  sections.forEach(s=>s.classList.toggle('active',s.id===id));
+  buttons.forEach(b=>b.classList.toggle('active',b.dataset.target===id));
+  const idx=sections.findIndex(s=>s.id===id);
+  document.getElementById('bar').style.width=((idx+1)/sections.length*100)+'%';
+  window.scrollTo({top:document.getElementById('top').offsetHeight,behavior:'smooth'});
+}
+buttons.forEach(b=>b.onclick=()=>show(b.dataset.target));
+document.getElementById('bar').style.width=(1/sections.length*100)+'%';
+
+const qs=[
+ ["Who is the only authority authorized to refer a case to an Honor hearing?",["RHR","HIO","Commandant","Superintendent"],2],
+ ["A Cadet who contests an allegation normally proceeds to what?",["CAB","HIH","SLDP-H","SJA review"],1],
+ ["What is the HIH standard of proof?",["Beyond a reasonable doubt","Clear and convincing","Preponderance of the evidence","Probable cause"],2],
+ ["How many of the nine voting board members are required for a FOUND finding?",["4","5","6","8"],2],
+ ["Who makes the final adjudication?",["IT","Honor Captain","Commandant","Superintendent"],3],
+ ["A FOUND finding automatically means separation. True or false?",["True","False"],1],
+ ["What is the main developmental program following retained Honor cases?",["SLDP-H","WAP","CUI","BJA"],0],
+ ["What happens after an HIH NOT FOUND?",["Automatic separation","The case is closed","SLDP-H is mandatory","The Commandant re-votes"],1]
+];
+let score=0, answered=0;
+const box=document.getElementById('quizbox');
+qs.forEach((q,i)=>{
+ const d=document.createElement('div'); d.className='quizq';
+ d.innerHTML='<b>'+(i+1)+'. '+q[0]+'</b>';
+ q[1].forEach((a,j)=>{
+   const b=document.createElement('button'); b.textContent=a;
+   b.onclick=()=>{
+     if(d.dataset.done)return; d.dataset.done='1'; answered++;
+     if(j===q[2]){b.classList.add('correct');score++}
+     else{b.classList.add('wrong');[...d.querySelectorAll('button')][q[2]].classList.add('correct')}
+     document.getElementById('score').textContent='Score: '+score+' / '+answered+' answered';
+     if(answered===qs.length)document.getElementById('score').textContent='Final score: '+score+' / '+qs.length+' 🎉';
+   };
+   d.appendChild(b);
+ });
+ box.appendChild(d);
+});
+
+function filterAcronyms(){
+  const q=(document.getElementById('acronymSearch')?.value||'').toLowerCase().trim();
+  document.querySelectorAll('#acronymGrid .acronym-card').forEach(card=>{
+    card.style.display=card.textContent.toLowerCase().includes(q)?'':'none';
+  });
+}
+
+</script>
+</body>
+</html>
